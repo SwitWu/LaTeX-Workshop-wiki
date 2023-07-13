@@ -19,7 +19,7 @@ If you want to preview the PDF file in a separated window, you can do that with 
 
 The extension also allows to view any PDF file possibly not related to a LaTeX project. To open such a PDF file, it is sufficient to open from the _Explorer_. Any PDF file opened this is way is monitored by a file watcher to be automatically reloaded when it changes on disk. Note that this is a different mechanism as the one used for PDF files related to LaTeX projects, which get reloaded after every successful building.
 
-### latex-workshop.latex.pdfWatch.delay
+### latex-workshop.latex.watch.pdf.delay
 
 Delay before reloading a PDF file after last change, in milliseconds.
 
@@ -55,7 +55,6 @@ Below are the detailed explanations for the different possible settings
 | [`latex-workshop.view.pdf.spreadMode`](#latex-workshopviewpdfspreadMode)          | The default spread mode of the PDF viewer    |
 | [`latex-workshop.view.pdf.hand`](#latex-workshopviewpdfhand)                      | Enable the hand tool                         |
 | [`latex-workshop.view.pdf.trim`](#latex-workshopviewpdftrim)                      | The default trim mode of the PDF viewer      |
-| [`latex-workshop.view.pdf.backgroundColor`](#latex-workshopviewpdfbackgroundcolor)| The background color of the PDF viewer       |
 
 Additional settings for the internal viewer:
 
@@ -65,16 +64,20 @@ Additional settings for the internal viewer:
 | [`latex-workshop.viewer.pdf.internal.port`](#latex-workshopviewerpdfinternalport)                        | Which port internal viewer server communicates through |
 | [`latex-workshop.viewer.pdf.internal.keyboardEvent`](#latex-workshopviewerpdfinternalkeyboardevent)      | The shortcuts of VS Code on the internal viewer        |
 
+The internal viewer listens on localhost. In some very specific use cases, one might require to change the host to listen on. As that may create a severe security breach, this cannot be changed by a permanent setting but only by calling the function `latex-workshop.changeHostName`(_Change server listening hostname_). This change will not remain across VS Code reloads. It can also be reset by calling `latex-workshop.resetHostName` (_Reset server listening hostname to 127.0.0.1_).
+
 ### Color
 
 |                                    Setting key                                                                   |                Description                            |
 | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------|
-| [`latex-workshop.view.pdf.color.light.pageColorsForeground`](#latex-workshopviewpdfcolorlightpagecolorsforeground)| The foreground color in light mode                    |
-| [`latex-workshop.view.pdf.color.light.pageColorsBackground`](#latex-workshopviewpdfcolorlightpagecolorsbackground)| The background color in light mode                    |
-| [`latex-workshop.view.pdf.color.light.backgroundColor`](#latex-workshopviewpdfcolorlightbackgroundcolor)          | The background color of the viewer in light mode      |
+| [`latex-workshop.view.pdf.color.light.pageColorsForeground`](#latex-workshopviewpdfcolorlightpagecolorsforeground)| The foreground color in light mode                   |
+| [`latex-workshop.view.pdf.color.light.pageColorsBackground`](#latex-workshopviewpdfcolorlightpagecolorsbackground)| The background color in light mode                   |
+| [`latex-workshop.view.pdf.color.light.backgroundColor`](#latex-workshopviewpdfcolorlightbackgroundcolor)         | The background color of the viewer in light mode      |
+| [`latex-workshop.view.pdf.color.light.pageBorderColor`](#latex-workshopviewpdfcolorlightpagebordercolor)         | The border color of pages in light mode               |
 | [`latex-workshop.view.pdf.color.dark.pageColorsForeground`](#latex-workshopviewpdfcolordarkpagecolorsforeground) | The foreground color in dark mode                     |
 | [`latex-workshop.view.pdf.color.dark.pageColorsBackground`](#latex-workshopviewpdfcolordarkpagecolorsbackground) | The background color in dark mode                     |
 | [`latex-workshop.view.pdf.color.dark.backgroundColor`](#latex-workshopviewpdfcolordarkbackgroundcolor)           | The background color of the viewer in dark mode       |
+| [`latex-workshop.view.pdf.color.dark.pageBorderColor`](#latex-workshopviewpdfcolordarkpagebordercolor)           | The border color of pages in dark mode                |
 
 ### Invert mode
 
@@ -262,6 +265,30 @@ Add the following options to your configuration:
 
 Thanks to [@miterion](https://github.com/miterion) for [figuring this out](https://miterion.de/post/vscodeplusokular/).
 
+##### [qpdfview](https://code.launchpad.net/qpdfview) support
+
+Forward:
+
+```json
+"latex-workshop.view.pdf.viewer":"external",
+"latex-workshop.view.pdf.external.viewer.command": "qpdfview",
+"latex-workshop.view.pdf.external.viewer.args": [
+    "--unique",
+    "%PDF%"
+],
+"latex-workshop.view.pdf.external.synctex.command": "qpdfview",
+"latex-workshop.view.pdf.external.synctex.args": [
+    "--unique",
+    "%PDF%#src:%TEX%:%LINE%:0",
+],
+```
+
+Backward:
+
+Goto **Edit > Settings... > Behavior > Source editor** and set the command to
+
+`code --goto "%1:%2"`
+
 #### macOS
 
 ##### [Skim](https://skim-app.sourceforge.io)
@@ -431,6 +458,14 @@ The background color of the viewer when the OS appearance is light. The string m
 | -------- | ------------- |
 | _string_ | `"#ffffff"`   |
 
+### latex-workshop.view.pdf.color.light.pageBorderColor
+
+The border color of pages when the OS appearance is light. The string must represent a color in HTML. Reload vscode to make any change in this configuration effective.
+
+| type     | default value |
+| -------- | ------------- |
+| _string_ | `"lightgrey"` |
+
 ### latex-workshop.view.pdf.color.dark.pageColorsForeground
 
 The foreground color of the document when the OS appearance is dark. The string must represent a color in HTML. Reload vscode to make any change in this configuration effective.
@@ -454,6 +489,14 @@ The background color of the viewer when the OS appearance is dark. The string mu
 | type     | default value |
 | -------- | ------------- |
 | _string_ | `"#ffffff"`   |
+
+### latex-workshop.view.pdf.color.dark.pageBorderColor
+
+The border color of pages when the OS appearance is dark. The string must represent a color in HTML. Reload vscode to make any change in this configuration effective.
+
+| type     | default value |
+| -------- | ------------- |
+| _string_ | `"lightgrey"` |
 
 ### latex-workshop.view.pdf.invertMode.enabled
 
